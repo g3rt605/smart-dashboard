@@ -1,36 +1,48 @@
-// Orologio in tempo reale
-function updateClock() {
-    const now = new Date();
-    const time = now.toLocaleTimeString("it-IT");
-    const date = now.toLocaleDateString("it-IT", { weekday: 'long', day: 'numeric', month: 'long' });
-    document.getElementById("clock").innerText = `${time}\n${date}`;
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
-  
-  // Meteo
-  async function getWeather() {
-    try {
-      const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&units=metric&appid=${WEATHER_API_KEY}`);
-      const data = await res.json();
-      const temp = Math.round(data.main.temp);
-      const description = data.weather[0].description;
-      document.getElementById("weather").innerText = `${CITY}: ${temp}°C, ${description}`;
-    } catch (err) {
-      document.getElementById("weather").innerText = "Errore meteo";
-    }
-  }
-  getWeather();
-  
-  // Citazione casuale
-  async function getQuote() {
-    try {
-      const res = await fetch("https://zenquotes.io/api/random");
-      const data = await res.json();
-      document.getElementById("quote").innerText = `"${data[0].q}" — ${data[0].a}`;
-    } catch (err) {
-      document.getElementById("quote").innerText = "Errore citazione";
-    }
-  }
-  getQuote();
-  
+// Data e ora
+function aggiornaOrario() {
+  const ora = new Date();
+  document.getElementById("orario").textContent = ora.toLocaleTimeString();
+  document.getElementById("data").textContent = ora.toLocaleDateString("it-IT", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+}
+setInterval(aggiornaOrario, 1000);
+aggiornaOrario();
+
+// Citazione
+function caricaCitazione() {
+  fetch("https://api.quotable.io/random")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("citazione").innerHTML = `
+        <blockquote>"${data.content}"</blockquote>
+        <p>— ${data.author}</p>
+      `;
+    })
+    .catch(() => {
+      document.getElementById("citazione").textContent = "Errore nel caricamento citazione.";
+    });
+}
+caricaCitazione();
+
+// Meteo
+function caricaMeteo() {
+  const city = "Napoli"; // Cambia la città se vuoi
+  const key = config.weatherApiKey;
+
+  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}&units=metric&lang=it`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("meteo").innerHTML = `
+        <p><strong>${data.name}</strong>: ${data.weather[0].description}</p>
+        <p>🌡️ ${data.main.temp}°C | 💧 Umidità: ${data.main.humidity}%</p>
+      `;
+    })
+    .catch(() => {
+      document.getElementById("meteo").textContent = "Errore nel caricamento meteo.";
+    });
+}
+caricaMeteo();

@@ -1,4 +1,4 @@
-// Personalizza qui le impostazioni
-
-const WEATHER_API_KEY = "INSERISCI_LA_TUA_API_KEY";
-const CITY = "Milan,it";
+const config = {
+    weatherApiKey: "a30c5c3da162ba55a622858efc43556"
+  };
+  
